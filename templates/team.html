@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h1>Team Registration</h1>
+
+    <h3>Register Your Team!</h3>
+
+    <form action="" method="post">
+        {{ template_form.hidden_tag() }}
+
+        <p>{{ template_form.team_name(size=32, placeholder="Team Name") }}</p>
+
+        <p>{{ template_form.submit }}</p>
+    </form>
+{% endblock%}
