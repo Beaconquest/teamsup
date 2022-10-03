@@ -1,22 +1,52 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <h1>Coach Registeration</h1>
+    <h1>Registeration</h1>
 
     <h3>Sign up here!</h3>
 
     <form action="" method="post">
         {{ template_form.hidden_tag() }}
 
-        <p>{{ template_form.username(size=32, placeholder="Username") }}</p>
+        <p>
+            {{ template_form.username(size=32, placeholder="Username") }}
+            {% for error in template_form.username.errors %}
+                <span style="color:red">[{{ error }}]</span>
+            {% endfor%}
+        </p>
 
-        <p>{{ template_form.name(size=32, placeholder="Name") }}</p>
+        <p>
+            {{ template_form.role(size=32, placeholder="Role") }}
+            {% for error in template_form.role.errors %}
+                <span style="color:red">[{{ error }}]</span>
+            {% endfor%}
+        </p>
 
-        <p>{{ template_form.email(size=32, placeholder="Email") }}</p>
+        <p>
+            {{ template_form.name(size=32, placeholder="Name") }}
+            {% for error in template_form.name.errors %}
+                <span style="color:red">[{{ error }}]</span>
+            {% endfor%}
+        </p>
 
-        <p>{{ template_form.password(size=32, placeholder="Password") }}</p>
+        <p>
+            {{ template_form.email(size=32, placeholder="Email") }}
+            {% for error in template_form.email.errors %}
+                <span style="color:red">[{{ error }}]</span>
+            {% endfor%}
+        </p>
 
-        <p>{{ template_form.password2(size=32, placeholder="Repeat Passaword") }}</p>
+        <p>{{ template_form.password(size=32, placeholder="Password") }}
+            {% for error in template_form.password.errors %}
+                <span style="color:red">[{{ error }}]</span>
+            {% endfor%}
+        </p>
+
+        <p>{{ template_form.password2(size=32, placeholder="Repeat Passaword") }}
+            {% for error in template_form.password2.errors %}
+                <span style="color:red">[{{ error }}]</span>
+            {% endfor%}
+        </p>
 
         <p>{{ template_form.submit }}</p>
     </form>

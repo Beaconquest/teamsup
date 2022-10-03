@@ -8,7 +8,7 @@
 
         <form action="{{ url_for('contact') }}" method="POST">
             {{ template_form.hidden_tag() }}
-            <fieldset class="form-field">
+            <p class="form-field">
                 {{ template_form.name(size=32, placeholder="Name") }}
                 {% if template_form.name.errors %}
                 <ul class="errors">
@@ -17,9 +17,9 @@
                     {% endfor %}
                 </ul>
             {% endif %}
-            </fieldset>
+            </p>
 
-            <fieldset class="form-field">
+            <p class="form-field">
                 {{ template_form.email(size=32, placeholder="Email") }}
                 {% if template_form.email.errors %}
                     <ul class="errors">
@@ -28,9 +28,9 @@
                         {% endfor %}
                     </ul>
                 {% endif %}
-            </fieldset>
+                </p>
 
-            <fieldset class="form-field">
+            <p class="form-field">
                 {{ template_form.body(size=32, placeholder="Body") }}
                 {% if template_form.body.errors %}
                 <ul class="errors">
@@ -39,7 +39,7 @@
                     {% endfor %}
                 </ul>
             {% endif %}
-            </fieldset>
+            </p>
 
             {{ template_form.submit }}
         </form>

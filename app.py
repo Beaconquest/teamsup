@@ -9,8 +9,8 @@ from flask_login import UserMixin, LoginManager
 from werkzeug.security import generate_password_hash
 
 # Form object declaration imports
-from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField, IntegerField, TextAreaField
+from flask_wtf import FlaskForm, RecaptchaField
+from wtforms import StringField, PasswordField, SubmitField, IntegerField, TextAreaField, SelectField
 from wtforms.validators import DataRequired, length, EqualTo, Email
 
 app = Flask(__name__)
@@ -20,20 +20,21 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
 db = SQLAlchemy(app)
 
 # define database models
-# User class is the  Coach class
-class Coach(UserMixin, db.Model):
+# User class 
+class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(140), index=True)
+    role = db.Column(db.String(140), index=True)
     email = db.Column(db.String(140), index=True, unique=True)
     username = db.Column(db.String(140), index=True, unique=True)
     password_hash = db.column(db.String(140))
     joined_at_date = db.Column(db.DateTime(), index=True, default=datetime.utcnow)
 
     def __repr__(self):
-        pass
+        return f"< {self.role} {self.name}>"
 
     def set_password(self, password):
-        pass
+        self.password_hash = generate_password_hash(password)
 
 class Team(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -52,6 +53,10 @@ class Athlete(db.Model):
 # define FlaskForm 
 class RegistrationForm(FlaskForm):
     name = StringField('Name', validators=[DataRequired()])
+    role = SelectField('Role', [DataRequired()], 
+    roles=[
+        "Head Coach", "Assistant Coach", "Team Manager", "Volunteer"
+    ])
     email = StringField('Email', validators=[DataRequired()])
     username = StringField('Username', validators=[DataRequired()])
     password = PasswordField('Password', validators=[DataRequired()])
@@ -66,6 +71,7 @@ class AthleteRegistrationForm(FlaskForm):
     athlete_name = StringField('Athletes Name', validators=[DataRequired()])
     date_of_birth = StringField('DOB')
     student_id = IntegerField('StudentID' )
+    position = StringField('Position')
     submit = SubmitField('Register')
 
 class ContactForm(FlaskForm):
@@ -74,37 +80,57 @@ class ContactForm(FlaskForm):
     email = StringField(
         'Email',
         [
-           # Email(message=('Not a valid email address.')), 
-            DataRequired()
-        ]
+            #Email(message=('Not a valid email address.')), 
+            DataRequired()]
     )
     body = TextAreaField(
         'Message', 
-        [
-            DataRequired(),
-            length(min=5, 
-            message=("Your message is too short."))
-        ]
+        [DataRequired(), length(min=5, message=("Your message is too short."))]
     )
-    # recaptcha = RecaptchaField()
+    #recaptcha = RecaptchaField()
     submit = SubmitField('Submit')
 
 # app routes
 
-@app.route('/register')
+@app.route('/register', methods=["GET", "POST"])
 def register():
+    """Registration form."""
     form = RegistrationForm(csfr_enable=False)
-    return render_template('register.html', template_form=form)
+    if form.validate_on_submit():
+        user = User(
+            name=form.name.data,
+            role=form.role.data,
+            username=form.username.data,
+            email=form.email.data)
+        user.set_password(form.password.data)
+        db.session.add(user)
+        db.session.commit()
+    return render_template('register.html', title='Register', template_form=form)
 
-@app.route('/register/athlete')
+@app.route('/register/athlete', methods=["GET", "POST"])
 def athlete():
+    """Athlete Registration Form."""
     form = AthleteRegistrationForm(csfr_enable=False)
-    return render_template("athlete.html", template_form=form)
+    if form.validate_on_submit():
+        athlete = Athlete(
+            athlete_name=form.athlete_name.data,
+            date_of_birth=form.date_of_birth.data,
+            student_id=form.student_id.data,
+            position=form.position.data
+        )
+        db.session.add(athlete)
+        db.session.commit()
+    return render_template("athlete.html", title="Athlete", template_form=form)
 
-@app.route('/register/team')
+@app.route('/register/team', methods=["GET", "POST"])
 def team():
+    """Team Registration Form."""
     form = TeamRegistrationForm(csfr_enable=False)
-    return render_template("team.html", template_form=form)
+    if form.validate_on_submit():
+        team = Team(team_name=form.team_name.data)
+        db.session.add(team)
+        db.session.commit()
+    return render_template("team.html", title='Team', template_form=form)
 
 @app.route('/contact', methods=["GET", "POST"])
 def contact():
@@ -116,5 +142,4 @@ def contact():
 
 @app.route('/')
 def index():
-   
     return render_template('index.html')
