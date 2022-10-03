@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+
+{% block content%}
+    <div class="form-wrapper">
+        <h1 class="title">Contact Us</h1>
+
+        <h3>Let us know what you need.</h3>
+
+        <form action="{{ url_for('contact') }}" method="POST">
+            {{ template_form.hidden_tag() }}
+            <fieldset class="form-field">
+                {{ template_form.name(size=32, placeholder="Name") }}
+                {% if template_form.name.errors %}
+                <ul class="errors">
+                    {% for error in template_form.name.errors %}
+                        <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+            </fieldset>
+
+            <fieldset class="form-field">
+                {{ template_form.email(size=32, placeholder="Email") }}
+                {% if template_form.email.errors %}
+                    <ul class="errors">
+                        {% for error in template_form.email.errors %}
+                            <li>{{ error }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+            </fieldset>
+
+            <fieldset class="form-field">
+                {{ template_form.body(size=32, placeholder="Body") }}
+                {% if template_form.body.errors %}
+                <ul class="errors">
+                    {% for error in template_form.body.errors %}
+                        <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+            </fieldset>
+
+            {{ template_form.submit }}
+        </form>
+    </div>
+{% endblock%}
