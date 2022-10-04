@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1>Sign In</h1>
+    <p>New User?<a href="{{ url_for('register') }}">Click to Register!</a></p>
+    <form action="" method="post">
+        {{ template_form.hidden_tag() }}
+        <p>
+            {{ template_form.username{size=32, placeholder="Username" }}
+            {% for error in template_form.username.errors %}
+            <span style="color:red">[{{ error }}]</span>
+            {% endfor %}
+        </p>
+        <p>
+            {{ template_form.password{size=32, placeholder="Password" }}
+            {% for error in template_form.password.errors %}
+            <span style="color:red">[{{ error }}]</span>
+            {% endfor %}
+        </p>
+        <p>{{ template_form.remember() }} {{ template_form.remember.label }}</p>
+        <p>{{ template_form.submit() }}</p>
+    </form>
+{% endblock%}

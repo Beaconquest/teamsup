@@ -16,7 +16,12 @@
         </p>
 
         <p>
-            {{ template_form.role(size=32, placeholder="Role") }}
+            {% for subfield in template_form.role %}
+                <tr>
+                    <td>{{ subfield }}</td>
+                    <td>{{ subfield.label }}</td>
+                </tr>
+            {% endfor %}
             {% for error in template_form.role.errors %}
                 <span style="color:red">[{{ error }}]</span>
             {% endfor%}
