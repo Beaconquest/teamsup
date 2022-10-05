@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h1>Athlete Registeration</h1>
+
+    <h3>Athlete Sign Up!</h3>
+
+    <form action="" method="post">
+        {{ template_form.hidden_tag() }}
+
+        <p>{{ template_form.athlete_name(size=32, placeholder="Athlete Name")}}</p>
+
+        <p>{{ template_form.date_of_birth(size=32, placeholder="DOB") }}</p>
+
+        <p>{{ template_form.student_id(size=32, placeholder="Student ID") }}</p>
+
+        <p>{{ template_form.submit }}</p>
+    </form>
+{% endblock %}

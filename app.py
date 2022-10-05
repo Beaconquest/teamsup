@@ -28,12 +28,13 @@ login_manager.init_app(app)
 # User class 
 class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(140), index=True)
-    role = db.Column(db.String(140), index=True)
+    name = db.Column(db.String(140), index=True, unique=False)
+    role = db.Column(db.String(140), index=True, unique=False)
     email = db.Column(db.String(140), index=True, unique=True)
     username = db.Column(db.String(140), index=True, unique=True)
     password_hash = db.column(db.String(140))
     joined_at_date = db.Column(db.DateTime(), index=True, default=datetime.utcnow)
+    team_id = db.Column(db.Integer, db.ForeignKey('team.id'))
 
     def __repr__(self):
         return f"< {self.role} {self.name}>"
@@ -47,13 +48,16 @@ class User(UserMixin, db.Model):
 class Team(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     team_name = db.Column(db.String(140), index=True, unique=True)
+    users = db.relationship("User", backref='team', lazy='dynamic')
+    athletes = db.relationship("Athlete", backref='team', lazy='dynamic')
 
 class Athlete(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    athlete_name = db.Column(db.String, index=True)
-    date_of_birth = db.Column(db.String, index=True)
+    student_name = db.Column(db.String, index=True, unique=False)
+    date_of_birth = db.Column(db.String, index=True, unique=False)
     student_id = db.Column(db.Integer, index=True, unique=True)
-    position = db.Column(db.String, index=True)
+    position = db.Column(db.Integer, index=True, unique=False)
+    team_id = db.Column(db.Integer, db.ForeignKey('team.id'))
 
 # set up database
 # db.create_all()
@@ -120,7 +124,7 @@ def register():
         db.session.commit()
     return render_template('register.html', title='Register', template_form=form)
 
-@app.route('/register/athlete', methods=["GET", "POST"])
+@app.route('/register/athlete-registration', methods=["GET", "POST"])
 @login_required
 def athlete():
     """Athlete Registration Form."""
@@ -134,10 +138,9 @@ def athlete():
         )
         db.session.add(athlete)
         db.session.commit()
-    return render_template("athlete.html", title="Athlete", template_form=form)
+    return render_template("athlete-registration.html", title="Athlete", template_form=form)
 
 @app.route('/register/team', methods=["GET", "POST"])
-@login_required
 def team():
     """Team Registration Form."""
     form = TeamRegistrationForm(csfr_enable=False)
