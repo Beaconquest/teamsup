@@ -6,13 +6,13 @@
     <form action="" method="post">
         {{ template_form.hidden_tag() }}
         <p>
-            {{ template_form.username{size=32, placeholder="Username" }}
+            {{ template_form.username(size=32, placeholder="Username") }}
             {% for error in template_form.username.errors %}
             <span style="color:red">[{{ error }}]</span>
             {% endfor %}
         </p>
         <p>
-            {{ template_form.password{size=32, placeholder="Password" }}
+            {{ template_form.password(size=32, placeholder="Password") }}
             {% for error in template_form.password.errors %}
             <span style="color:red">[{{ error }}]</span>
             {% endfor %}

@@ -51,6 +51,9 @@ class Team(db.Model):
     users = db.relationship("User", backref='team', lazy='dynamic')
     athletes = db.relationship("Athlete", backref='team', lazy='dynamic')
 
+    def __repr__(self):
+        return f"Team: {self.team_name}"
+
 class Athlete(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     student_name = db.Column(db.String, index=True, unique=False)
@@ -59,8 +62,11 @@ class Athlete(db.Model):
     position = db.Column(db.Integer, index=True, unique=False)
     team_id = db.Column(db.Integer, db.ForeignKey('team.id'))
 
+    def __repr__(self):
+        return f"{self.student_name} {self.date_of_birth} {self.student_id} {self.position}"
+
 # set up database
-# db.create_all()
+db.create_all()
 
 # define FlaskForms 
 class RegistrationForm(FlaskForm):
@@ -170,8 +176,8 @@ def login():
             login_user(user, remember=form.remember.data)
             next_page = request.args.get('next')
             return redirect(next_page) if next_page else redirect(url_for('index', _external=True, _scheme='http'))
-        else:
-            return render_template('login.html', template_form=form)
+    else:
+        return render_template('login.html', template_form=form)
 
 @app.route('/contact', methods=["GET", "POST"])
 def contact():
