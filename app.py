@@ -66,7 +66,7 @@ class Athlete(db.Model):
         return f"{self.student_name} {self.date_of_birth} {self.student_id} {self.position}"
 
 # set up database
-db.create_all()
+# db.create_all()
 
 # define FlaskForms 
 class RegistrationForm(FlaskForm):
@@ -163,6 +163,7 @@ def user(username):
     user = User.query.filter_by(username=username).first_or_404()
     return render_template('user.html', template_form=user)
 
+# user login
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.get(int(user_id))
@@ -176,8 +177,15 @@ def login():
             login_user(user, remember=form.remember.data)
             next_page = request.args.get('next')
             return redirect(next_page) if next_page else redirect(url_for('index', _external=True, _scheme='http'))
-    else:
-        return render_template('login.html', template_form=form)
+        else:
+            return redirect(url_for('login', _external=True, _scheme='http'))
+    return render_template('login.html', template_form=form)
+
+@app.route('/user/<username>')
+@login_required
+def user(username):
+    user = User.query.filter_by(username=username).first_or_404()
+    return render_template('user.html', template_form=user)
 
 @app.route('/contact', methods=["GET", "POST"])
 def contact():
@@ -189,4 +197,5 @@ def contact():
 
 @app.route('/')
 def index():
-    return render_template('index.html')
+    current_users = User.query.all()
+    return render_template('index.html', current_users=current_users)

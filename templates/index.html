@@ -9,4 +9,11 @@
         <a href="/register">Register Here</a>
         <a href="/login">Login Here</a>
     </h3>
+
+    <p>Available users</p>
+    <p>
+        {% for user in current_users %}
+        <li> {{ user.name }}</li>
+        {% endfor %}
+    </p>
 {% endblock%}

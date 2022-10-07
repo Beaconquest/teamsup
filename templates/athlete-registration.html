@@ -8,13 +8,27 @@
     <form action="" method="post">
         {{ template_form.hidden_tag() }}
 
-        <p>{{ template_form.athlete_name(size=32, placeholder="Athlete Name")}}</p>
+        <p>
+            {{ template_form.athlete_name(size=32, placeholder="Athlete Name") }}
+            {% for error in template_form.athlete_name.errors %}
+                <span style="color:red">[{{ error }}]</span>
+            {% endfor%}
+        </p>
 
-        <p>{{ template_form.date_of_birth(size=32, placeholder="DOB") }}</p>
+        <p>
+            {{ template_form.date_of_birth(size=32, placeholder="DOB") }}
+            {% for error in template_form.date_of_birth.errors %}
+                <span style="color:red">[{{ error }}]</span>
+            {% endfor %}
+        </p>
 
-        <p>{{ template_form.student_id(size=32, placeholder="Student ID") }}</p>
+        <p>
+            {{ template_form.student_id(size=32, placeholder="Student ID") }}
+            {% for error in template_form.student_id.errors %}
+             <span style="color:red">[{{ error }}]</span>
+            {% endfor %}
+        </p>
 
         <p>{{ template_form.submit }}</p>
     </form>
 {% endblock %}
-                             
