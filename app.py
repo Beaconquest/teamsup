@@ -16,7 +16,7 @@ from wtforms.validators import DataRequired, length, EqualTo, Email
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'super-secret-password-supreme'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///myTeamDatabase.db'
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
 # create login manager
@@ -27,15 +27,25 @@ login_manager.init_app(app)
 # define database models
 # User class 
 class User(UserMixin, db.Model):
+    
+    __tablename__ ='user'
+
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(140), index=True, unique=False)
     role = db.Column(db.String(140), index=True, unique=False)
     email = db.Column(db.String(140), index=True, unique=True)
     username = db.Column(db.String(140), index=True, unique=True)
-    password_hash = db.column(db.String(140))
+    password_hash = db.Column(db.String(140))
     joined_at_date = db.Column(db.DateTime(), index=True, default=datetime.utcnow)
     team_id = db.Column(db.Integer, db.ForeignKey('team.id'))
 
+    def get_id(self):
+        return str(self.id)
+
+    def get_reset_password_token(self, expires_in=600):
+        return jwt.encode({'resete_password': self.id, 'exp': time() + expires_in}, 
+        current_app.config['SECRET_KEY'], algorithm='HS256').decode('utf-8')
+    
     def __repr__(self):
         return f"< {self.role} {self.name}>"
 
@@ -66,7 +76,7 @@ class Athlete(db.Model):
         return f"{self.student_name} {self.date_of_birth} {self.student_id} {self.position}"
 
 # set up database
-# db.create_all()
+db.create_all()
 
 # define FlaskForms 
 class RegistrationForm(FlaskForm):
@@ -156,13 +166,6 @@ def team():
         db.session.commit()
     return render_template("team.html", title='Team', template_form=form)
 
-# Login related routes
-@app.route('/user/<username>')
-@login_required
-def user(username):
-    user = User.query.filter_by(username=username).first_or_404()
-    return render_template('user.html', template_form=user)
-
 # user login
 @login_manager.user_loader
 def load_user(user_id):
@@ -176,17 +179,19 @@ def login():
         if user and user.check_password(form.password.data):
             login_user(user, remember=form.remember.data)
             next_page = request.args.get('next')
-            return redirect(next_page) if next_page else redirect(url_for('index', _external=True, _scheme='http'))
+            return redirect(next_page) if next_page else redirect(url_for('user', _external=True, _scheme='http'))
         else:
             return redirect(url_for('login', _external=True, _scheme='http'))
     return render_template('login.html', template_form=form)
 
+# Login related routes
 @app.route('/user/<username>')
 @login_required
 def user(username):
     user = User.query.filter_by(username=username).first_or_404()
     return render_template('user.html', template_form=user)
 
+# contact page 
 @app.route('/contact', methods=["GET", "POST"])
 def contact():
     """Standard contact form."""
