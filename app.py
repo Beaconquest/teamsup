@@ -4,14 +4,12 @@ from datetime import datetime
 from flask import Flask, render_template, url_for, redirect, request, flash
 from flask_sqlalchemy import SQLAlchemy
 
+# forms
+import forms
+
 # Login object declaration imports
 from flask_login import UserMixin, LoginManager, login_required, login_user, logout_user, current_user
 from werkzeug.security import generate_password_hash, check_password_hash
-
-# Form object declaration imports
-from flask_wtf import FlaskForm, RecaptchaField
-from wtforms import StringField, PasswordField, SubmitField, IntegerField, TextAreaField, RadioField, BooleanField
-from wtforms.validators import DataRequired, length, EqualTo, Email
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'super-secret-password-supreme'
@@ -78,57 +76,11 @@ class Athlete(db.Model):
 # set up database
 db.create_all()
 
-# define FlaskForms 
-class RegistrationForm(FlaskForm):
-    name = StringField('Name', validators=[DataRequired()])
-    role = RadioField('Role', [DataRequired()], 
-    choices=[
-        "Head Coach", "Assistant Coach", "Team Manager", "Volunteer"
-    ])
-    email = StringField('Email', validators=[DataRequired(), Email()])
-    username = StringField('Username', validators=[DataRequired()])
-    password = PasswordField('Password', validators=[DataRequired()])
-    password2 = PasswordField('Repeat Password', validators=[DataRequired(), EqualTo('password')])
-    submit = SubmitField('Register')
-
-class TeamRegistrationForm(FlaskForm):
-    team_name = StringField('Team Name', validators=[DataRequired()])
-    submit = SubmitField('Register')
-    
-class AthleteRegistrationForm(FlaskForm):
-    athlete_name = StringField('Athletes Name', validators=[DataRequired()])
-    date_of_birth = StringField('DOB', validators=[DataRequired()])
-    student_id = IntegerField('StudentID', validators=[DataRequired()])
-    position = StringField('Position', validators=[DataRequired()])
-    submit = SubmitField('Register')
-
-class ContactForm(FlaskForm):
-    """Contact Form."""
-    name = StringField('Name', validators=[DataRequired()])
-    email = StringField(
-        'Email', validators=[
-            Email(), 
-            DataRequired()]
-    )
-    body = TextAreaField(
-        'Message', 
-        [DataRequired(), length(min=5, message=("Your message is too short."))]
-    )
-    # register recaptcha with google  
-    #recaptcha = RecaptchaField()
-    submit = SubmitField('Submit')
-
-class LoginForm(FlaskForm):
-    username = StringField('Username', validators=[DataRequired()])
-    password = PasswordField('Password', validators=[DataRequired()])
-    remember = BooleanField('Remember Me')
-    submit = SubmitField('Login')
-
 # registration related routes
 @app.route('/register', methods=["GET", "POST"])
 def register():
     """Registration form."""
-    form = RegistrationForm(csfr_enable=False)
+    form = forms.RegistrationForm(csfr_enable=False)
     if form.validate_on_submit():
         user = User(
             name=form.name.data,
@@ -144,7 +96,7 @@ def register():
 @login_required
 def athlete():
     """Athlete Registration Form."""
-    form = AthleteRegistrationForm(csfr_enable=False)
+    form = forms.AthleteRegistrationForm(csfr_enable=False)
     if form.validate_on_submit():
         athlete = Athlete(
             athlete_name=form.athlete_name.data,
@@ -159,7 +111,7 @@ def athlete():
 @app.route('/register/team', methods=["GET", "POST"])
 def team():
     """Team Registration Form."""
-    form = TeamRegistrationForm(csfr_enable=False)
+    form = forms.TeamRegistrationForm(csfr_enable=False)
     if form.validate_on_submit():
         team = Team(team_name=form.team_name.data)
         db.session.add(team)
@@ -173,7 +125,7 @@ def load_user(user_id):
 
 @app.route('/login', methods=["GET", "POST"])
 def login():
-    form = LoginForm(csrf_enable=False)
+    form = forms.LoginForm(csrf_enable=False)
     if form.validate_on_submit():
         user = User.query.filter_by(username=form.username.data).first()
         if user and user.check_password(form.password.data):
@@ -195,12 +147,17 @@ def user(username):
 @app.route('/contact', methods=["GET", "POST"])
 def contact():
     """Standard contact form."""
-    form = ContactForm()
+    form = forms.ContactForm()
     if form.validate_on_submit():
         return redirect(url_for("Success"))
     return render_template('contact.html', template_form=form)
 
 @app.route('/')
+@app.route('/index')
 def index():
     current_users = User.query.all()
-    return render_template('index.html', current_users=current_users)
+    form = forms.LoginForm(csrf_enable=False)
+    return render_template('index.html', current_users=current_users, template_form=form)
+
+if __name__ == "__main__":
+    app.run(debug=True)

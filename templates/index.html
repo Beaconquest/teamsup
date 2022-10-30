@@ -5,15 +5,30 @@
 
     <p>This site allows you to register, maintain and organize your team.</p>
 
-    <h3>
-        <a href="/register">Register Here</a>
-        <a href="/login">Login Here</a>
-    </h3>
-
     <p>Available users</p>
     <p>
         {% for user in current_users %}
         <li> {{ user.name }}</li>
         {% endfor %}
     </p>
+{% endblock%}
+
+{% block sidebar %}
+    <form action="" method="post">
+        {{ template_form.hidden_tag() }}
+        <p>
+            {{ template_form.username(size=32, placeholder="Username") }}
+            {% for error in template_form.username.errors %}
+            <span style="color:red">[{{ error }}]</span>
+            {% endfor %}
+        </p>
+        <p>
+            {{ template_form.password(size=32, placeholder="Password") }}
+            {% for error in template_form.password.errors %}
+            <span style="color:red">[{{ error }}]</span>
+            {% endfor %}
+        </p>
+        <p>{{ template_form.remember() }} {{ template_form.remember.label }}</p>
+        <p>{{ template_form.submit() }}</p>
+</form>
 {% endblock%}
