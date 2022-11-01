@@ -156,8 +156,11 @@ def contact():
 @app.route('/index')
 def index():
     current_users = User.query.all()
-    form = forms.LoginForm(csrf_enable=False)
     return render_template('index.html', current_users=current_users, template_form=form)
+
+@app.errorhandler(404)
+def page_not_found(e):
+    return render_template('404.html'), 404
 
 if __name__ == "__main__":
     app.run(debug=True)

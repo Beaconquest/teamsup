@@ -3,50 +3,57 @@
 {% block title %} TeamsUp-Contact Us {% endblock %}
 
 {% block content%}
-    <h1 class="title">Contact Us</h1>
+    <h1>Contact Us</h1>
 
     <h3>Let us know what you need.</h3>
 
     <form action="{{ url_for('contact') }}" method="POST">
         {{ template_form.hidden_tag() }}
 
-        <p class="form-field">
-            {{ template_form.name(size=32, placeholder="Name") }}
-            {% if template_form.name.errors %}
-            <ul class="errors">
-                {% for error in template_form.name.errors %}
-                    <li>{{ error }}</li>
-                {% endfor %}
-            </ul>
-        {% endif %}
-        </p>
+        <table>
+            <tr>
+                <td>{{ template_form.name(size=32, placeholder="Name") }}</td>
+                    {% if template_form.name.errors %}
+                        <ul>
+                            {% for error in template_form.name.errors %}
+                                <li>{{ error }}</li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+            </tr>
 
-        <p class="form-field">
-            {{ template_form.email(size=32, placeholder="Email") }}
-            {% if template_form.email.errors %}
-                <ul class="errors">
-                    {% for error in template_form.email.errors %}
-                        <li>{{ error }}</li>
-                    {% endfor %}
-                </ul>
-            {% endif %}
-            </p>
+            <tr>
+                <td>{{ template_form.email(size=32, placeholder="Email") }}</td>
+                    {% if template_form.email.errors %}
+                        <ul>
+                            {% for error in template_form.email.errors %}
+                                <li>{{ error }}</li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+                </td>
+            </tr>
 
-        <p class="form-field">
-            {{ template_form.body(size=32, placeholder="Body") }}
-            {% if template_form.body.errors %}
-            <ul class="errors">
-                {% for error in template_form.body.errors %}
-                    <li>{{ error }}</li>
-                {% endfor %}
-            </ul>
-        {% endif %}
-        </p>
-
-        {{ template_form.submit }}
+            <tr>
+                <td>{{ template_form.body(size=50, placeholder="Body") }}</td>
+                    {% if template_form.body.errors %}
+                        <ul>
+                            {% for error in template_form.body.errors %}
+                                <li>{{ error }}</li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+                </td>
+            </tr>
+            
+            <tr>
+                <td>
+                    {{ template_form.submit }}
+                </td>
+            </tr>
+        </table>
     </form>
 
 {% endblock%}
 
-{% block sidebar %}
-{% endblock%}
+{% block sidebar %}{% endblock%}
