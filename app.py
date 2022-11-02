@@ -5,7 +5,7 @@ from flask import Flask, render_template, url_for, redirect, request, flash
 from flask_sqlalchemy import SQLAlchemy
 
 # forms
-import forms
+from forms import RegistrationForm, TeamRegistrationForm, AthleteRegistrationForm, ContactForm, LoginForm
 
 # Login object declaration imports
 from flask_login import UserMixin, LoginManager, login_required, login_user, logout_user, current_user
@@ -21,57 +21,7 @@ db = SQLAlchemy(app)
 login_manager = LoginManager()
 login_manager.init_app(app)
 
-
-# define database models
-# User class 
-class User(UserMixin, db.Model):
-    
-    __tablename__ ='user'
-
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(140), index=True, unique=False)
-    role = db.Column(db.String(140), index=True, unique=False)
-    email = db.Column(db.String(140), index=True, unique=True)
-    username = db.Column(db.String(140), index=True, unique=True)
-    password_hash = db.Column(db.String(140))
-    joined_at_date = db.Column(db.DateTime(), index=True, default=datetime.utcnow)
-    team_id = db.Column(db.Integer, db.ForeignKey('team.id'))
-
-    def get_id(self):
-        return str(self.id)
-
-    def get_reset_password_token(self, expires_in=600):
-        return jwt.encode({'resete_password': self.id, 'exp': time() + expires_in}, 
-        current_app.config['SECRET_KEY'], algorithm='HS256').decode('utf-8')
-    
-    def __repr__(self):
-        return f"< {self.role} {self.name}>"
-
-    def set_password(self, password):
-        self.password_hash = generate_password_hash(password)
-
-    def check_password(self, password):
-        return check_password_hash(self.password_hash, password)
-
-class Team(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    team_name = db.Column(db.String(140), index=True, unique=True)
-    users = db.relationship("User", backref='team', lazy='dynamic')
-    athletes = db.relationship("Athlete", backref='team', lazy='dynamic')
-
-    def __repr__(self):
-        return f"Team: {self.team_name}"
-
-class Athlete(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    student_name = db.Column(db.String, index=True, unique=False)
-    date_of_birth = db.Column(db.String, index=True, unique=False)
-    student_id = db.Column(db.Integer, index=True, unique=True)
-    position = db.Column(db.Integer, index=True, unique=False)
-    team_id = db.Column(db.Integer, db.ForeignKey('team.id'))
-
-    def __repr__(self):
-        return f"{self.student_name} {self.date_of_birth} {self.student_id} {self.position}"
+from models import User, Athlete, Team
 
 # set up database
 db.create_all()
@@ -80,7 +30,7 @@ db.create_all()
 @app.route('/register', methods=["GET", "POST"])
 def register():
     """Registration form."""
-    form = forms.RegistrationForm(csfr_enable=False)
+    form = RegistrationForm(csfr_enable=False)
     if form.validate_on_submit():
         user = User(
             name=form.name.data,
@@ -96,7 +46,7 @@ def register():
 @login_required
 def athlete():
     """Athlete Registration Form."""
-    form = forms.AthleteRegistrationForm(csfr_enable=False)
+    form = AthleteRegistrationForm(csfr_enable=False)
     if form.validate_on_submit():
         athlete = Athlete(
             athlete_name=form.athlete_name.data,
@@ -111,7 +61,7 @@ def athlete():
 @app.route('/register/team', methods=["GET", "POST"])
 def team():
     """Team Registration Form."""
-    form = forms.TeamRegistrationForm(csfr_enable=False)
+    form = TeamRegistrationForm(csfr_enable=False)
     if form.validate_on_submit():
         team = Team(team_name=form.team_name.data)
         db.session.add(team)
@@ -125,7 +75,7 @@ def load_user(user_id):
 
 @app.route('/login', methods=["GET", "POST"])
 def login():
-    form = forms.LoginForm(csrf_enable=False)
+    form = LoginForm(csrf_enable=False)
     if form.validate_on_submit():
         user = User.query.filter_by(username=form.username.data).first()
         if user and user.check_password(form.password.data):
@@ -147,7 +97,7 @@ def user(username):
 @app.route('/contact', methods=["GET", "POST"])
 def contact():
     """Standard contact form."""
-    form = forms.ContactForm()
+    form = ContactForm()
     if form.validate_on_submit():
         return redirect(url_for("Success"))
     return render_template('contact.html', template_form=form)
@@ -156,7 +106,7 @@ def contact():
 @app.route('/index')
 def index():
     current_users = User.query.all()
-    return render_template('index.html', current_users=current_users, template_form=form)
+    return render_template('index.html', current_users=current_users)
 
 @app.errorhandler(404)
 def page_not_found(e):
