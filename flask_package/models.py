@@ -1,10 +1,13 @@
+from datetime import datetime
+from flask_package import db, login_manager
+from flask_login import UserMixin
+from werkzeug.security import generate_password_hash, check_password_hash
 
-
+@login_manager.user_loader
+def load_user(user_id):
+    return User.query.get(int(user_id))
 
 class User(UserMixin, db.Model):
-    
-    __tablename__ ='user'
-
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(140), index=True, unique=False)
     role = db.Column(db.String(140), index=True, unique=False)
@@ -16,13 +19,9 @@ class User(UserMixin, db.Model):
 
     def get_id(self):
         return str(self.id)
-
-    def get_reset_password_token(self, expires_in=600):
-        return jwt.encode({'resete_password': self.id, 'exp': time() + expires_in}, 
-        current_app.config['SECRET_KEY'], algorithm='HS256').decode('utf-8')
     
     def __repr__(self):
-        return f"Date register: {self.joined_at_date}, Role: {self.role}, Name: {self.name}, Username: {self.username}, Email: {self.email}"
+        return f"Role: {self.role}, Name: {self.name}, Username: {self.username}, Email: {self.email}"
 
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)
@@ -48,4 +47,4 @@ class Athlete(db.Model):
     team_id = db.Column(db.Integer, db.ForeignKey('team.id'))
 
     def __repr__(self):
-        return f"{self.student_name} {self.date_of_birth} {self.student_id} {self.position}"
+        return f"Student Name: {self.student_name}, DOB: {self.date_of_birth}, Student Id: {self.student_id}, Position: {self.position}"

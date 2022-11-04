@@ -1,10 +1,11 @@
-from flask_wtf import FlaskForm, RecaptchaField
+from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField, IntegerField, TextAreaField, RadioField, BooleanField
 from wtforms.validators import DataRequired, length, EqualTo, Email
+from flask_package.models import User
 
 class RegistrationForm(FlaskForm):
     name = StringField('Name', validators=[DataRequired()])
-    role = RadioField('Role', [DataRequired()], 
+    role = RadioField('Role', validators=[DataRequired()], 
     choices=[
         "Head Coach", "Assistant Coach", "Team Manager", "Volunteer"
     ])
@@ -28,17 +29,8 @@ class AthleteRegistrationForm(FlaskForm):
 class ContactForm(FlaskForm):
     """Contact Form."""
     name = StringField('Name', validators=[DataRequired()])
-    email = StringField(
-        'Email', validators=[
-            Email(), 
-            DataRequired()]
-    )
-    body = TextAreaField(
-        'Message', 
-        [DataRequired(), length(min=5, message=("Your message is too short."))]
-    )
-    # register recaptcha with google  
-    #recaptcha = RecaptchaField()
+    email = StringField('Email', validators=[Email(), DataRequired()])
+    body = TextAreaField('Message', validators=[DataRequired(), length(min=5, message=("Your message is too short."))])
     submit = SubmitField('Submit')
 
 class LoginForm(FlaskForm):
