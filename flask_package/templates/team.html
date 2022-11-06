@@ -1,22 +1,31 @@
 {% extends "base.html" %}
 
+{% block title %} Teams {% endblock %}
+
 {% block content %}
-    <h1>Team Registration</h1>
 
-    <h3>Register Your Team!</h3>
+    {% if current_user.is_authenticated %}
+        <article>
+            <h3>{{ current_user.team}}</h3>
+        </article>
+    {% else %}
+        <h1>Team Registration</h1>
 
-    <form action="" method="post">
-        {{ template_form.hidden_tag() }}
+        <h3>Register Your Team!</h3>
 
-        <p>
-            {{ template_form.team_name(size=32, placeholder="Team Name") }}
-            {% for error in template_form.team_name.errors %}
-                <span style="color:red">[{{ error }}]</span>
-            {% endfor %}
-        </p>
+        <form action="" method="post">
+            {{ template_form.hidden_tag() }}
 
-        <p>{{ template_form.submit }}</p>
-    </form>
+            <p>
+                {{ template_form.team_name(size=32, placeholder="Team Name") }}
+                {% for error in template_form.team_name.errors %}
+                    <span style="color:red">[{{ error }}]</span>
+                {% endfor %}
+            </p>
+
+            <p>{{ template_form.submit }}</p>
+        </form>
+    {% endif %}
 {% endblock%}
 
 {% block sidebar %}

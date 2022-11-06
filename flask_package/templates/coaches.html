@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+
+{% block title%} Coaches {% endblock %}
+
+{% block content%}
+    {% for coach in coaches %} 
+        <article class="main wrapper clearfix">
+            <h3>{{ coach.name }} </h3>
+            <p>{{ coach.role}}</p>
+            <hr>
+        </article>
+    {% endfor %}
+
+{% endblock%}

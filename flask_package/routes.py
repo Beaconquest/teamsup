@@ -1,6 +1,6 @@
 from flask import render_template, request, redirect, url_for, flash
 from flask_package import app, db
-from flask_login import login_required, login_user, current_user
+from flask_login import login_required, login_user, logout_user, current_user
 from flask_package.forms import RegistrationForm, AthleteRegistrationForm, TeamRegistrationForm, ContactForm, LoginForm
 from flask_package.models import User, Athlete, Team
 
@@ -23,6 +23,7 @@ def register():
         db.session.commit()
         flash("Account created!")
         return redirect('/index')
+
     return render_template('register.html', title='Register', template_form=form)
 
 @app.route('/register/athlete-registration', methods=["GET", "POST"])
@@ -64,12 +65,23 @@ def login():
             return redirect(url_for('login', _external=True, _scheme='http'))
     return render_template('login.html', template_form=form)
 
-# Login related routes
+@app.route('/logout')
+def logout():
+    logout_user()
+    return redirect(url_for('index'))
+
+# Login_required routes
 @app.route('/user/<username>')
 @login_required
 def user(username):
     user = User.query.filter_by(username=username).first_or_404()
     return render_template('user.html', template_form=user)
+
+@app.route('/coaches')
+@login_required
+def coaches():
+    coaches = User.query.all()
+    return render_template('coaches.html', coaches=coaches)
 
 # contact page 
 @app.route('/contact', methods=["GET", "POST"])

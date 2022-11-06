@@ -17,13 +17,14 @@
         <div class="header-container">
             <header class="wrapper clearfix">
                 <h1 class="title"><a href="/index">TeamsUp</a></h1>
+                <br>
                 <nav>
                     {% if current_user.is_authenticated %}
                         <ul>
-                            <li><a href="/coach">Coaches</a></li>
+                            <ul><a href="/coaches">Coaches</a></ul>
                             <li><a href="/athletes">Athletes</a></li>
                             <li><a href="/team">Team</a></li>
-                            <li><a href="/contact">Contact Us</a></li>
+                            <li><a href="/contact">Contact</a></li>
                             <li><a href="/logout">Logout</a></li>
                         </ul>
                     {% else %}

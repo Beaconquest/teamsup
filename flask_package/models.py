@@ -17,9 +17,6 @@ class User(UserMixin, db.Model):
     joined_at_date = db.Column(db.DateTime(), index=True, default=datetime.utcnow)
     team_id = db.Column(db.Integer, db.ForeignKey('team.id'))
 
-    def get_id(self):
-        return str(self.id)
-    
     def __repr__(self):
         return f"Role: {self.role}, Name: {self.name}, Username: {self.username}, Email: {self.email}"
 

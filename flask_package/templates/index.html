@@ -3,16 +3,17 @@
 {% block title %} Teams Up {% endblock %}
 
 {% block content %}
-    <h1>Welcome to Teams Up!</h1>
+    {% if current_user.is_authenticated %}
+        <h1>Welcome, {{ current_user.name }}!</h1>
+        <p> Let's manage your team!</p>
 
-    <p>This site allows you to register, maintain and organize your team.</p>
+    {% else %}
 
-    <p>Available users</p>
-    <p>
-        {% for user in current_users %}
-        <li> {{ user.name }}</li>
-        {% endfor %}
-    </p>
+        <h1>Welcome to Teams Up!</h1>
+
+        <p>This site allows you to register, maintain and organize your team.</p>
+    
+        {% endif %}
 {% endblock%}
 
 {% block sidebar %}{% endblock %}
