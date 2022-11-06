@@ -26,21 +26,28 @@ def register():
 
     return render_template('register.html', title='Register', template_form=form)
 
-@app.route('/register/athlete-registration', methods=["GET", "POST"])
+@app.route('/register/athlete', methods=["GET", "POST"])
 @login_required
-def athlete():
+def register_athlete():
     """Athlete Registration Form."""
     form = AthleteRegistrationForm(csfr_enable=False)
     if form.validate_on_submit():
         athlete = Athlete(
-            athlete_name=form.athlete_name.data,
+            student_name=form.student_name.data,
             date_of_birth=form.date_of_birth.data,
             student_id=form.student_id.data,
             position=form.position.data
         )
         db.session.add(athlete)
         db.session.commit()
-    return render_template("athlete-registration.html", title="Athlete", template_form=form)
+        return redirect('/athletes')
+    return render_template("register-athlete.html", title="RegisterAthlete", template_form=form)
+
+@app.route('/athletes')
+@login_required
+def athletes():
+    athletes = Athlete.query.all()
+    return render_template('athletes.html', athletes=athletes)
 
 @app.route('/register/team', methods=["GET", "POST"])
 @login_required

@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block title %} Athlete List {% endblock %}
+
+{% block content %}
+    <h1>Your Athletes Roster!</h1>
+    <p>Need to register an Athlete? <a href="{{ url_for('register_athlete') }}">Click here to register a new athlete!</a></p>
+
+    {% for athlete in athletes %} 
+        <article class="main wrapper clearfix">
+            <table>
+                <tr>
+                    <td>{{athlete.student_name}}</td>
+                </tr>
+                <tr>
+                    <td>{{athlete.date_of_birth}}</td>
+                </tr>
+                <tr>
+                    <td>{{athlete.student_id}}</td>
+                </tr>
+                <tr>
+                    <td>{{athlete.position}}</td>
+                </tr>
+            </table>
+            <hr>
+        </article>
+        
+    {% endfor %}
+{% endblock%}
+
+{% block sidebar %}{% endblock %}

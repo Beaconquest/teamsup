@@ -20,7 +20,7 @@ class TeamRegistrationForm(FlaskForm):
     submit = SubmitField('Register')
     
 class AthleteRegistrationForm(FlaskForm):
-    athlete_name = StringField('Athletes Name', validators=[DataRequired()])
+    student_name = StringField('Athletes Name', validators=[DataRequired()])
     date_of_birth = StringField('DOB', validators=[DataRequired()])
     student_id = IntegerField('StudentID', validators=[DataRequired()])
     position = StringField('Position', validators=[DataRequired()])
