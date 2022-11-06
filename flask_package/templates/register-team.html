@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block title %} Register Teams {% endblock %}
+
+{% block content %}
+    <h1>Register Your Teams!</h1>
+        
+    <form action="" method="post">
+        {{ template_form.hidden_tag() }}
+
+        <p>
+            {{ template_form.team_name(size=32, placeholder="Team Name") }}
+            {% for error in template_form.team_name.errors %}
+                <span style="color:red">[{{ error }}]</span>
+            {% endfor %}
+        </p>
+
+        <p>{{ template_form.submit }}</p>
+    </form>
+
+{% endblock%}
+
+{% block sidebar %}{% endblock %}

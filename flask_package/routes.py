@@ -43,14 +43,23 @@ def athlete():
     return render_template("athlete-registration.html", title="Athlete", template_form=form)
 
 @app.route('/register/team', methods=["GET", "POST"])
-def team():
+@login_required
+def register_team():
     """Team Registration Form."""
-    form = TeamRegistrationForm(csfr_enable=False)
-    if form.validate_on_submit():
-        team = Team(team_name=form.team_name.data)
-        db.session.add(team)
-        db.session.commit()
-    return render_template("team.html", title='Team', template_form=form)
+    if current_user.role == 'Head Coach':
+        form = TeamRegistrationForm(csfr_enable=False)
+        if form.validate_on_submit():
+            team = Team(team_name=form.team_name.data)
+            db.session.add(team)
+            db.session.commit()
+            return redirect('/team')
+    return render_template("register-team.html", title='Team', template_form=form)
+
+@app.route('/team')
+@login_required
+def team():
+    teams = Team.query.all()
+    return render_template('team.html', teams=teams)
 
 @app.route('/login', methods=["GET", "POST"])
 def login():
