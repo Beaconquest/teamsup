@@ -8,9 +8,14 @@
     <p>Need to register a Team? <a href="{{ url_for('register_team') }}">Click here to register a new team!</a></p>
 
     {% for team in teams %}
-        <ul>
-            <li>{{ team.team_name }}</li>
-        </ul>
+        <table>
+            <tr>
+                <td><a href="{{url_for('athletes')}}">{{ team.team_name }}</a></td>
+                <td>----<a>edit</a></td>
+                <td><a>----delete</a></td>
+
+            </tr>
+        </table>
     {% endfor %}
 
 {% endblock%}

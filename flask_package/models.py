@@ -30,6 +30,7 @@ class Team(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     team_name = db.Column(db.String(140), index=True, unique=True)
     users = db.relationship("User", backref='team', lazy='dynamic')
+    coach_id = db.Column(db.Integer)
     athletes = db.relationship("Athlete", backref='team', lazy='dynamic')
 
     def __repr__(self):

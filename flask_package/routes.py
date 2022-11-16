@@ -53,19 +53,31 @@ def athletes():
 @login_required
 def register_team():
     """Team Registration Form."""
+    
     if current_user.role == 'Head Coach':
+
+        teams = Team.query.filter_by(coach_id=current_user.id)
+        if teams is None:
+            teams = []        
         form = TeamRegistrationForm(csfr_enable=False)
         if form.validate_on_submit():
-            team = Team(team_name=form.team_name.data)
+            team = Team(
+                team_name = form.team_name.data,
+                coach_id = current_user.id
+            )
             db.session.add(team)
             db.session.commit()
             return redirect('/team')
-    return render_template("register-team.html", title='Team', template_form=form)
+    return render_template("register-team.html", title='Team', teams=teams, template_form=form)
 
 @app.route('/team')
 @login_required
 def team():
-    teams = Team.query.all()
+    teams = Team.query.filter_by(coach_id=current_user.id)
+    
+    if teams is None:
+            teams = [] 
+    
     return render_template('team.html', teams=teams)
 
 @app.route('/login', methods=["GET", "POST"])
@@ -91,7 +103,9 @@ def logout():
 @login_required
 def user(username):
     user = User.query.filter_by(username=username).first_or_404()
-    return render_template('user.html', template_form=user)
+    teams = Team.query.filter_by(coach_id=user.id)
+
+    return render_template('user.html', user=user, teams=teams)
 
 @app.route('/coaches')
 @login_required

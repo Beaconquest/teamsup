@@ -1,9 +1,19 @@
 {% extends 'base.html'%}
 
 {% block content %}
-    {% if current_user.is_authenticated %}
-        <h3> Welcome, {{ current_user.username }}!</h3>
-    {% endif %}
+    <h1> Welcome, {{ current_user.username }}!</h1>
+
+    <h3>Manage your team</h3><hr>
+
+    <article>
+        <h3>Current Teams:</h3>
+        {% for team in teams %}
+            <ul>
+                <li>{{ team }}</li>
+            </ul>
+        {% endfor %}
+
+    </article>
 {% endblock %}
 
 {% block sidebar %}
