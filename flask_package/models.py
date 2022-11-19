@@ -29,9 +29,7 @@ class User(UserMixin, db.Model):
 class Team(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     team_name = db.Column(db.String(140), index=True, unique=True)
-    users = db.relationship("User", backref='team', lazy='dynamic')
     coach_id = db.Column(db.Integer)
-    athletes = db.relationship("Athlete", backref='team', lazy='dynamic')
 
     def __repr__(self):
         return f"Team: {self.team_name}"
@@ -42,7 +40,8 @@ class Athlete(db.Model):
     date_of_birth = db.Column(db.String, index=True, unique=False)
     student_id = db.Column(db.Integer, index=True, unique=True)
     position = db.Column(db.Integer, index=True, unique=False)
-    team_id = db.Column(db.Integer, db.ForeignKey('team.id'))
+    coach_id = db.Column(db.Integer)
+    team_id = db.Column(db.Integer)
 
     def __repr__(self):
         return f"Student Name: {self.student_name}, DOB: {self.date_of_birth}, Student Id: {self.student_id}, Position: {self.position}"

@@ -3,19 +3,20 @@
 {% block title %} Teams {% endblock %}
 
 {% block content %}
-    <h1>Manage Teams</h1>
+    <h2>Manage Teams</h2>
     
     <p>Need to register a Team? <a href="{{ url_for('register_team') }}">Click here to register a new team!</a></p>
 
     {% for team in teams %}
-        <table>
-            <tr>
-                <td><a href="{{url_for('athletes')}}">{{ team.team_name }}</a></td>
-                <td>----<a>edit</a></td>
-                <td><a>----delete</a></td>
-
-            </tr>
-        </table>
+        <article class="main wrapper clearfix">
+            <table>
+                <tr>
+                    <td><a href="{{url_for('athletes')}}">{{ team.team_name }}</a></td>
+                    <td>----<a>edit</a></td>
+                    <td><a>----delete</a></td>
+                </tr>
+            </table>
+        </article>
     {% endfor %}
 
 {% endblock%}

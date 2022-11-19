@@ -7,6 +7,24 @@
         <h1>Welcome, {{ current_user.name }}!</h1>
         <p> Let's manage your team!</p>
 
+        <table>
+            <tr>
+                <td>
+                    <p><a href="{{ url_for('coaches') }}">Coaches</a></p>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <p><a href="{{ url_for('team') }}">Team</a></p>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <p><a href="{{ url_for('athletes') }}">Athletes</a></p>
+                </td>
+            </tr>
+        </table>
+
     {% else %}
 
         <h1>Welcome to Teams Up!</h1>
