@@ -2,7 +2,7 @@ from flask import render_template, request, redirect, url_for, flash
 from flask_package import app, db
 from flask_login import login_required, login_user, logout_user, current_user
 from flask_package.forms import RegistrationForm, AthleteRegistrationForm, StaffRegistrationForm, TeamRegistrationForm, ContactForm, LoginForm
-from flask_package.models import User, Athlete, Team, Staff
+from flask_package.models import User, Athlete, Team, Staff, Contact
 
 @app.route('/register', methods=["GET", "POST"])
 def register():
@@ -146,9 +146,16 @@ def coaches():
 @app.route('/contact', methods=["GET", "POST"])
 def contact():
     """Standard contact form."""
-    form = ContactForm()
+    form = ContactForm(csfr_enable=False)
     if form.validate_on_submit():
-        return redirect(url_for("Success"))
+        contacts = Contact(
+            name = form.name.data,
+            email = form.email.data,
+            body = form.body.data
+        )
+        db.session.add(contacts)
+        db.session.commit()
+        flash("We have received your contact.")
     return render_template('contact.html', template_form=form)
 
 @app.route('/')

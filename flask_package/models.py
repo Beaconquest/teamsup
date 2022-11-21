@@ -44,6 +44,10 @@ class Athlete(db.Model):
     coach_id = db.Column(db.Integer)
     team_id = db.Column(db.Integer)
 
+    def __repr__(self):
+        return f"Athlete Name: {self.name}"
+
+
 class Staff(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String, index=True, unique=False)
@@ -53,4 +57,10 @@ class Staff(db.Model):
     team_id = db.Column(db.Integer)
 
     def __repr__(self):
-        return f"Student Name: {self.student_name}, DOB: {self.date_of_birth}, Student Id: {self.student_id}, Position: {self.position}"
+        return f"Staff Name: {self.name}"
+
+class Contact(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(140), index=True, unique=False)
+    email = db.Column(db.String(140), index=True, unique=True)
+    body = db.Column(db.String(250), index=True, unique=False)
