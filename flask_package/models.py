@@ -36,10 +36,19 @@ class Team(db.Model):
 
 class Athlete(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    student_name = db.Column(db.String, index=True, unique=False)
+    name = db.Column(db.String, index=True, unique=False)
+    email = db.Column(db.String(140), index=True, unique=True)
     date_of_birth = db.Column(db.String, index=True, unique=False)
     student_id = db.Column(db.Integer, index=True, unique=True)
     position = db.Column(db.Integer, index=True, unique=False)
+    coach_id = db.Column(db.Integer)
+    team_id = db.Column(db.Integer)
+
+class Staff(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String, index=True, unique=False)
+    email = db.Column(db.String(140), index=True, unique=True)
+    role = db.Column(db.String(140), index=True, unique=False)
     coach_id = db.Column(db.Integer)
     team_id = db.Column(db.Integer)
 

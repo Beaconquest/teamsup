@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h1>Staff Registeration</h1>
+
+    <h3>Staff Sign Up!</h3>
+
+    <form action="" method="post">
+        {{ template_form.hidden_tag() }}
+
+        <p>
+            {{ template_form.staff_name(size=32, placeholder="Staff Name") }}
+            {% for error in template_form.staff_name.errors %}
+                <span style="color:red">[{{ error }}]</span>
+            {% endfor%}
+        </p>
+
+        <p>
+            {{ template_form.staff_email(size=32, placeholder="email@email.com") }}
+            {% for error in template_form.staff_email.errors %}
+                <span style="color:red">[{{ error }}]</span>
+            {% endfor %}
+        </p>
+
+        <p>
+            {% for subfield in template_form.role %}
+                <tr>
+                    <td>{{ subfield }}</td>
+                    <td>{{ subfield.label }}</td>
+                </tr>
+            {% endfor %}
+            {% for error in template_form.role.errors %}
+                <span style="color:red">[{{ error }}]</span>
+            {% endfor%}
+        </p>
+
+        <p>{{ template_form.submit }}</p>
+    </form>
+{% endblock %}
+
+{% block sidebar %}
+{% endblock%}

@@ -3,11 +3,33 @@
 {% block title%} Coaches {% endblock %}
 
 {% block content%}
-    <h2>Coach Roster</h2>
+    <h2>Coach and staff Roster</h2>
+    <p>Need to register more coaching staff? <a href="{{ url_for('register_staff') }}">Click here to register a new members!</a></p>
     {% for coach in coaches %} 
         <article class="main wrapper clearfix">
             <h3>{{ coach.name }} </h3>
             <p>{{ coach.role}}</p>
+            <hr>
+        </article>
+    {% endfor %}
+
+    {% for staff in staff_members %}
+        <article class="main wrapper clearfix">
+            <table>
+                <tr>
+                    <td><a href="{{url_for('coaches')}}">{{ staff.staff_name }}</a></td>
+                    <td>----<a>edit</a></td>
+                    <td><a>----delete</a></td>
+                </tr>
+                <tr><td>{{staff.role}}</td></tr>
+            </table>
+        </article>
+    {% endfor %}
+
+    {% for person in staff %} 
+        <article class="main wrapper clearfix">
+            <h3>{{ person.name }} </h3>
+            <p>{{ person.role}}</p>
             <hr>
         </article>
     {% endfor %}

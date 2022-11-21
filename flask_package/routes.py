@@ -1,8 +1,8 @@
 from flask import render_template, request, redirect, url_for, flash
 from flask_package import app, db
 from flask_login import login_required, login_user, logout_user, current_user
-from flask_package.forms import RegistrationForm, AthleteRegistrationForm, TeamRegistrationForm, ContactForm, LoginForm
-from flask_package.models import User, Athlete, Team
+from flask_package.forms import RegistrationForm, AthleteRegistrationForm, StaffRegistrationForm, TeamRegistrationForm, ContactForm, LoginForm
+from flask_package.models import User, Athlete, Team, Staff
 
 @app.route('/register', methods=["GET", "POST"])
 def register():
@@ -26,10 +26,38 @@ def register():
 
     return render_template('register.html', title='Register', template_form=form)
 
+@app.route('/register/staff', methods=["GET", "POST"])
+@login_required
+def register_staff():
+    """Registration form."""
+
+    staff_members = Staff.query.filter_by(coach_id=current_user.id)
+    if staff_members is None:
+        staff_members = []
+
+    form = StaffRegistrationForm(csfr_enable=False)
+
+    if form.validate_on_submit():
+        staff = Staff(
+            name=form.staff_name.data,
+            email=form.staff_email.data,
+            role=form.role.data)
+        db.session.add(staff)
+        db.session.commit()
+        flash("Account created!")
+        return redirect('/coaches')
+
+    return render_template('register-staff.html', title='RegisterStaff', staff_members=staff_members, template_form=form)
+
 @app.route('/register/athlete', methods=["GET", "POST"])
 @login_required
 def register_athlete():
     """Athlete Registration Form."""
+
+    athletes = Athlete.query.filter_by(coach_id=current_user.id)
+    if athletes is None:
+        athletes = []
+
     form = AthleteRegistrationForm(csfr_enable=False)
     if form.validate_on_submit():
         athlete = Athlete(
@@ -41,7 +69,7 @@ def register_athlete():
         db.session.add(athlete)
         db.session.commit()
         return redirect('/athletes')
-    return render_template("register-athlete.html", title="RegisterAthlete", template_form=form)
+    return render_template("register-athlete.html", title="RegisterAthlete", athletes=athletes, template_form=form)
 
 @app.route('/athletes')
 @login_required
@@ -110,8 +138,9 @@ def user(username):
 @app.route('/coaches')
 @login_required
 def coaches():
-    coaches = User.query.all()
-    return render_template('coaches.html', coaches=coaches)
+    coaches = User.query.filter_by(id=current_user.id)
+    staff = Staff.query.all()
+    return render_template('coaches.html', coaches=coaches, staff=staff)
 
 # contact page 
 @app.route('/contact', methods=["GET", "POST"])
