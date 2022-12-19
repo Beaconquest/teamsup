@@ -9,8 +9,8 @@
         {{ template_form.hidden_tag() }}
 
         <p>
-            {{ template_form.student_name(size=32, placeholder="Student Name") }}
-            {% for error in template_form.student_name.errors %}
+            {{ template_form.name(size=32, placeholder="Student Name") }}
+            {% for error in template_form.name.errors %}
                 <span style="color:red">[{{ error }}]</span>
             {% endfor%}
         </p>

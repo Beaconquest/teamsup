@@ -61,7 +61,7 @@ def register_athlete():
     form = AthleteRegistrationForm(csfr_enable=False)
     if form.validate_on_submit():
         athlete = Athlete(
-            student_name=form.student_name.data,
+            name=form.name.data,
             date_of_birth=form.date_of_birth.data,
             student_id=form.student_id.data,
             position=form.position.data
