@@ -116,14 +116,17 @@ def login():
         user = User.query.filter_by(username=form.username.data).first()
         if user and user.check_password(form.password.data):
             login_user(user, remember=form.remember.data)
+            flash("Successfully Logged In!")
             return redirect(url_for('index', _external=True, _scheme='http'))
         else:
+            flash("Unsucessful Log In Attempt!")
             return redirect(url_for('login', _external=True, _scheme='http'))
     return render_template('login.html', template_form=form)
 
 @app.route('/logout')
 def logout():
     logout_user()
+    flash("Successfully Logged Out!")
     return redirect(url_for('index'))
 
 # Login_required routes
@@ -139,7 +142,7 @@ def user(username):
 @login_required
 def coaches():
     coaches = User.query.filter_by(id=current_user.id)
-    staff = Staff.query.all()
+    staff = Staff.query.filter_by(coach_id=current_user.id)
     return render_template('coaches.html', coaches=coaches, staff=staff)
 
 # contact page 
