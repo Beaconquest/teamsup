@@ -1,20 +1,35 @@
 {% extends 'base.html'%}
 
 {% block content %}
-    <h1> Welcome, {{ current_user.username }}!</h1>
+    {% if current_user.is_authenticated %}
+        <article>
+            <h1>Welcome, {{ current_user.name }}!</h1>
+            <p> Let's manage your team!</p>
 
-    <h3>Manage your team</h3><hr>
+            <table>
+                <tr>
+                    <td>
+                        <p><a href="{{ url_for('coaches') }}">Coaches</a></p>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <p><a href="{{ url_for('team') }}">Team</a></p>
+                    </td>
+                </tr>
+            </table>
 
-    <article>
-        <h3>Current Teams:</h3>
-        {% for team in teams %}
-            <ul>
-                <li>{{ team }}</li>
-            </ul>
-        {% endfor %}
+        </article>
+    {% else %}
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                {% for message in messages %}
+                    {{ message }}
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+    {%endif%}
 
-    </article>
 {% endblock %}
 
-{% block sidebar %}
-{% endblock%}
+{% block sidebar %}{% endblock%}

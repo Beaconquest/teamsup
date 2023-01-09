@@ -13,17 +13,6 @@
         </article>
     {% endfor %}
 
-    {% for staff in staff_members %}
-        <article class="main wrapper clearfix">
-            <table>
-                <tr>
-                    <td><a href="{{url_for('coaches')}}">{{ staff.staff_name }}</a></td>
-                </tr>
-                <tr><td>{{staff.role}}</td></tr>
-            </table>
-        </article>
-    {% endfor %}
-
     {% for person in staff %} 
         <article class="main wrapper clearfix">
             <h3>{{ person.name }} </h3>

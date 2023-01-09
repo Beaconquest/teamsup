@@ -35,6 +35,19 @@
              <span style="color:red">[{{ error }}]</span>
             {% endfor %}
         </p>
+        <p>
+            <table>
+                {% for team in teams%}
+                    <tr>
+                        <td>
+                            <label>
+                                <input type="radio" name="team_id" value="{{team.team_name}}">{{team.team_name}}
+                            </label>
+                        </td>
+                    </tr> 
+                {% endfor%}
+            </table>
+        </p>
 
         <p>{{ template_form.submit }}</p>
     </form>

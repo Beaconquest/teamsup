@@ -3,18 +3,25 @@
 {% block title %} Teams {% endblock %}
 
 {% block content %}
+
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            {% for message in messages %}
+                {{ message }}
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
     <h2>Manage Teams</h2>
     
     <p>Need to register a Team? <a href="{{ url_for('register_team') }}">Click here to register a new team!</a></p>
 
     {% for team in teams %}
-        <article class="main wrapper clearfix">
-            <table>
-                <tr>
-                    <td><a href="{{url_for('athletes')}}">{{ team.team_name }}</a></td>
-                </tr>
-            </table>
-        </article>
+        <table>
+            <tr>
+                <td><a href="{{url_for('athletes', team_name=team.team_name, _external=True, _scheme='http')}}">{{ team.team_name }}</a></td>
+            </tr>
+        </table>
     {% endfor %}
 
 {% endblock%}

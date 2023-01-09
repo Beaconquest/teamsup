@@ -16,10 +16,11 @@
 
         <div class="header-container">
             <header class="wrapper clearfix">
-                <h1 class="title"><a href="/index">TeamsUp</a></h1>
-                <br>
-                <nav>
-                    {% if current_user.is_authenticated %}
+                {% if current_user.is_authenticated %}
+
+                    <h1 class="title"><a href="{{ url_for('user', username=current_user.username)}}">TeamsUp</a></h1>
+                    <br>
+                    <nav>
                         <ul>
                             <ul><a href="/coaches">Coaches</a></ul>
                             <li><a href="/athletes">Athletes</a></li>
@@ -27,14 +28,18 @@
                             <li><a href="/contact">Contact</a></li>
                             <li><a href="/logout">Logout</a></li>
                         </ul>
-                    {% else %}
-                        <ul>
-                            <li><a href="/login">Login</a></li>
-                            <li><a href="/register">Register</a></li>
-                            <li><a href="/contact">Contact us</a></li>
-                        </ul>
-                    {% endif %}
-                </nav>
+                    </nav>
+                {% else %}
+                    <h1 class="title"><a href="/">TeamsUp</a></h1>
+                    <br>
+                    <nav>
+                            <ul>
+                                <li><a href="/login">Login</a></li>
+                                <li><a href="/register">Register</a></li>
+                                <li><a href="/contact">Contact us</a></li>
+                            </ul>
+                    </nav>
+                {% endif %}
             </header>
         </div>
 

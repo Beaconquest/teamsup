@@ -8,7 +8,7 @@ from flask_package.models import User, Athlete, Team, Staff, Contact
 def register():
     """Registration form."""
     if current_user.is_authenticated:
-            return redirect(url_for('index'))
+            return redirect(url_for('user', username=current_user.username, _external=True, _scheme='http'))
 
     form = RegistrationForm(csfr_enable=False)
 
@@ -31,7 +31,7 @@ def register():
 def register_staff():
     """Registration form."""
 
-    staff_members = Staff.query.filter_by(coach_id=current_user.id)
+    staff_members = Staff.query.filter_by(user_id=current_user.id)
     if staff_members is None:
         staff_members = []
 
@@ -41,7 +41,9 @@ def register_staff():
         staff = Staff(
             name=form.staff_name.data,
             email=form.staff_email.data,
-            role=form.role.data)
+            role=form.role.data,
+            user_id=current_user.id
+        )
         db.session.add(staff)
         db.session.commit()
         flash("Account created!")
@@ -54,54 +56,70 @@ def register_staff():
 def register_athlete():
     """Athlete Registration Form."""
 
-    athletes = Athlete.query.filter_by(coach_id=current_user.id)
+    athletes = Athlete.query.all()
+    teams = Team.query.all()
+    
     if athletes is None:
         athletes = []
-
+    
     form = AthleteRegistrationForm(csfr_enable=False)
     if form.validate_on_submit():
         athlete = Athlete(
             name=form.name.data,
             date_of_birth=form.date_of_birth.data,
             student_id=form.student_id.data,
-            position=form.position.data
+            position=form.position.data,
+            team_id=form.team_id.data
         )
         db.session.add(athlete)
         db.session.commit()
+        flash("Athlete Profile Created")
         return redirect('/athletes')
-    return render_template("register-athlete.html", title="RegisterAthlete", athletes=athletes, template_form=form)
+    return render_template("register-athlete.html", title="RegisterAthlete", teams=teams, athletes=athletes, template_form=form)
+
+@app.route('/athletes/<team_name>')
+@login_required
+def athletes(team_name):
+    
+    athletes = Athlete.query.filter_by(team_id=team_name)
+
+    return render_template('athletes.html', athletes=athletes)
 
 @app.route('/athletes')
 @login_required
-def athletes():
+def athletes_list():
+    
     athletes = Athlete.query.all()
+
     return render_template('athletes.html', athletes=athletes)
 
 @app.route('/register/team', methods=["GET", "POST"])
 @login_required
 def register_team():
     """Team Registration Form."""
-    
-    if current_user.role == 'Head Coach':
 
-        teams = Team.query.filter_by(coach_id=current_user.id)
-        if teams is None:
-            teams = []        
-        form = TeamRegistrationForm(csfr_enable=False)
-        if form.validate_on_submit():
-            team = Team(
-                team_name = form.team_name.data,
-                coach_id = current_user.id
-            )
-            db.session.add(team)
-            db.session.commit()
-            return redirect('/team')
+    teams = Team.query.filter_by(user_id=current_user.id)
+
+    if teams is None:
+        teams = []        
+
+    form = TeamRegistrationForm(csfr_enable=False)
+
+    if form.validate_on_submit():
+        team = Team(
+            team_name = form.team_name.data,
+            user_id = current_user.id
+        )
+        db.session.add(team)
+        db.session.commit()
+        flash(f"{team.team_name} has been added to your Team Roster.")
+        return redirect('/team')
     return render_template("register-team.html", title='Team', teams=teams, template_form=form)
 
 @app.route('/team')
 @login_required
 def team():
-    teams = Team.query.filter_by(coach_id=current_user.id)
+    teams = Team.query.filter_by(user_id=current_user.id)
     
     if teams is None:
             teams = [] 
@@ -114,10 +132,12 @@ def login():
     if form.validate_on_submit():
         
         user = User.query.filter_by(username=form.username.data).first()
+        
         if user and user.check_password(form.password.data):
             login_user(user, remember=form.remember.data)
+            next_page = request.args.get('next') #  user redirect to the page who is supposed to log in
             flash("Successfully Logged In!")
-            return redirect(url_for('index', _external=True, _scheme='http'))
+            return redirect(next_page) if next_page else redirect(url_for('user', username=user.username , _external=True, _scheme='http'))
         else:
             flash("Unsucessful Log In Attempt!")
             return redirect(url_for('login', _external=True, _scheme='http'))
@@ -134,7 +154,7 @@ def logout():
 @login_required
 def user(username):
     user = User.query.filter_by(username=username).first_or_404()
-    teams = Team.query.filter_by(coach_id=user.id)
+    teams = Team.query.filter_by(user_id=user.id)
 
     return render_template('user.html', user=user, teams=teams)
 
@@ -142,7 +162,7 @@ def user(username):
 @login_required
 def coaches():
     coaches = User.query.filter_by(id=current_user.id)
-    staff = Staff.query.filter_by(coach_id=current_user.id)
+    staff = Staff.query.filter_by(user_id=current_user.id)
     return render_template('coaches.html', coaches=coaches, staff=staff)
 
 # contact page 

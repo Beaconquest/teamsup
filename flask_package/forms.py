@@ -24,6 +24,7 @@ class AthleteRegistrationForm(FlaskForm):
     date_of_birth = StringField('DOB', validators=[DataRequired()])
     student_id = IntegerField('StudentID', validators=[DataRequired()])
     position = StringField('Position', validators=[DataRequired()])
+    team_id = StringField('Position', validators=[DataRequired()])
     submit = SubmitField('Register')
 
 class StaffRegistrationForm(FlaskForm):
@@ -47,3 +48,8 @@ class LoginForm(FlaskForm):
     password = PasswordField('Password', validators=[DataRequired()])
     remember = BooleanField('Remember Me')
     submit = SubmitField('Login')
+
+
+
+
+    
