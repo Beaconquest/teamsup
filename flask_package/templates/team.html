@@ -14,16 +14,19 @@
 
     <h2>Manage Teams</h2>
     
-    <p>Need to register a Team? <a href="{{ url_for('register_team') }}">Click here to register a new team!</a></p>
+        {% if current_user.is_authenticated %}
+            <p>Need to register a Team? <a href="{{ url_for('register_team') }}">Click here to register a new team!</a></p>
+            {% for team in teams %}
+                <table>
+                    <tr>
+                        <td><a href="{{url_for('athletes', team_name=team.team_name, _external=True, _scheme='http')}}">{{ team.team_name }}</a></td>
+                    </tr>
+                </table>
+            {% endfor %}
+        {% else %}
+            <p>Need to register a Team? <a href="{{ url_for('register_team') }}">Click here to register a new team!</a></p>
+        {% endif %}
 
-    {% for team in teams %}
-        <table>
-            <tr>
-                <td><a href="{{url_for('athletes', team_name=team.team_name, _external=True, _scheme='http')}}">{{ team.team_name }}</a></td>
-            </tr>
-        </table>
-    {% endfor %}
-
-{% endblock%}
+{% endblock %}
 
 {% block sidebar %}{% endblock%}

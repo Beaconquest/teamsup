@@ -5,10 +5,11 @@
 {% block content%}
     <h2>Coach and staff Roster</h2>
     <p>Need to register more coaching staff? <a href="{{ url_for('register_staff') }}">Click here to register a new members!</a></p>
-    {% for coach in coaches %} 
+        
+    {% for user in coach %}
         <article class="main wrapper clearfix">
-            <h3>{{ coach.name }} </h3>
-            <p>{{ coach.role}}</p>
+            <h3>{{ user.name }} </h3>
+            <p>{{ user.role}}</p>
             <hr>
         </article>
     {% endfor %}

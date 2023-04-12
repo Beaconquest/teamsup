@@ -1,8 +1,9 @@
 {% extends "base.html" %}
 
-{% block title %} Athlete List {% endblock %}
+{% block title %} Teams {% endblock %}
 
 {% block content %}
+
     {% with messages = get_flashed_messages() %}
         {% if messages %}
             {% for message in messages %}
@@ -11,18 +12,16 @@
         {% endif %}
     {% endwith %}
 
-    <h2>Athlete Roster!</h2>
-
+    <h2>Athlete list</h2>
+    
         {% if current_user.is_authenticated %}
-                <p>Need to register an Athlete? <a href="{{ url_for('register_athlete') }}">Click here to register a new athlete!</a></p>
-
+            <p>Need to register an Athlete? <a href="{{ url_for('register_athlete') }}">Click here to register a new athlete!</a></p>
             <table>
                 <tr>
                     <td><p>Athlete Name </p></td>
                     <td><p>DOB</p></td>
                     <td><p>Student Id</p></td>
                     <td><p>Position</p></td>
-                    <td><p>Team</p></td>
                 </tr>
                 {% for athlete in athletes %} 
                 <tr>
@@ -30,14 +29,13 @@
                     <td><p>{{athlete.date_of_birth}}</p></td>
                     <td><p>{{athlete.student_id}}</p></td>
                     <td><p>{{athlete.position}}</p></td>
-                    <td><p>{{athlete.team_id}}</p></td>
                 </tr>
                 {% endfor %}
             </table>
         {% else %}
             <p>Need to register an Athlete? <a href="{{ url_for('register_athlete') }}">Click here to register a new athlete!</a></p>
         {% endif %}
-    
-{% endblock%}
 
-{% block sidebar %}{% endblock %}
+{% endblock %}
+
+{% block sidebar %}{% endblock%}

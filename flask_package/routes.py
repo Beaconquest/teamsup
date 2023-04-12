@@ -47,7 +47,7 @@ def register_staff():
         db.session.add(staff)
         db.session.commit()
         flash("Account created!")
-        return redirect('/coaches')
+        return redirect(url_for('coaches', _external=True, _scheme='http'))
 
     return render_template('register-staff.html', title='RegisterStaff', staff_members=staff_members, template_form=form)
 
@@ -56,11 +56,8 @@ def register_staff():
 def register_athlete():
     """Athlete Registration Form."""
 
-    athletes = Athlete.query.all()
-    teams = Team.query.all()
-    
-    if athletes is None:
-        athletes = []
+    athlete = Athlete.query.filter_by(user_id=current_user.id)
+    teams = Team.query.filter_by(user_id=current_user.id)
     
     form = AthleteRegistrationForm(csfr_enable=False)
     if form.validate_on_submit():
@@ -69,8 +66,10 @@ def register_athlete():
             date_of_birth=form.date_of_birth.data,
             student_id=form.student_id.data,
             position=form.position.data,
-            team_id=form.team_id.data
-        )
+            user_id=current_user.id,
+            team_id =form.team_id.data
+            )
+
         db.session.add(athlete)
         db.session.commit()
         flash("Athlete Profile Created")
@@ -80,16 +79,17 @@ def register_athlete():
 @app.route('/athletes/<team_name>')
 @login_required
 def athletes(team_name):
+    team = Team.query.filter_by(team_name=team_name).first()
     
-    athletes = Athlete.query.filter_by(team_id=team_name)
-
-    return render_template('athletes.html', athletes=athletes)
+    athletes = Athlete.query.filter_by(team_id=team.id)
+    
+    return render_template('team-athletes.html', athletes=athletes)
 
 @app.route('/athletes')
 @login_required
 def athletes_list():
     
-    athletes = Athlete.query.all()
+    athletes = Athlete.query.filter_by(user_id=current_user.id)
 
     return render_template('athletes.html', athletes=athletes)
 
@@ -161,9 +161,9 @@ def user(username):
 @app.route('/coaches')
 @login_required
 def coaches():
-    coaches = User.query.filter_by(id=current_user.id)
+    coach = User.query.filter_by(id=current_user.id)
     staff = Staff.query.filter_by(user_id=current_user.id)
-    return render_template('coaches.html', coaches=coaches, staff=staff)
+    return render_template('coaches.html', coach=coach, staff=staff)
 
 # contact page 
 @app.route('/contact', methods=["GET", "POST"])
@@ -179,6 +179,8 @@ def contact():
         db.session.add(contacts)
         db.session.commit()
         flash("We have received your contact.")
+        return redirect(url_for('contact', _external=True, _scheme='http'))
+        
     return render_template('contact.html', template_form=form)
 
 @app.route('/')

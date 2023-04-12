@@ -16,6 +16,7 @@ class User(UserMixin, db.Model):
     password_hash = db.Column(db.String(140))
     staffs = db.relationship('Staff', backref='user', lazy='dynamic')
     teams = db.relationship('Team', backref='user', lazy='dynamic')
+    athletes = db.relationship('Athlete', backref='user', lazy='dynamic')
     joined_at_date = db.Column(db.DateTime(), index=True, default=datetime.utcnow)
 
     def __repr__(self):
@@ -31,8 +32,8 @@ class Team(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     team_name = db.Column(db.String(140), index=True, unique=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+
     athletes = db.relationship('Athlete', backref='team', lazy='dynamic')
-    
 
     def __repr__(self):
         return f"Team: {self.team_name}"
@@ -44,6 +45,7 @@ class Athlete(db.Model):
     date_of_birth = db.Column(db.String, index=True, unique=False)
     student_id = db.Column(db.Integer, index=True, unique=True)
     position = db.Column(db.Integer, index=True, unique=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     team_id = db.Column(db.Integer, db.ForeignKey('team.id'))
 
     def __repr__(self):
@@ -63,5 +65,6 @@ class Staff(db.Model):
 class Contact(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(140), index=True, unique=False)
-    email = db.Column(db.String(140), index=True, unique=True)
+    email = db.Column(db.String(140), index=True, unique=False)
     body = db.Column(db.String(250), index=True, unique=False)
+    message_date = db.Column(db.DateTime(), index=True, default=datetime.utcnow)
