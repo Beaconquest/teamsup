@@ -8,25 +8,41 @@ def load_user(user_id):
     return User.query.get(int(user_id))
 
 class User(UserMixin, db.Model):
+    """User account model."""
+
+    __tablname__ = "users"
+
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(140), index=True, unique=False)
-    role = db.Column(db.String(140), index=True, unique=False)
-    email = db.Column(db.String(140), index=True, unique=True)
+    first_name: str = db.Column(db.String(16), index=True, unique=False)
+    last_name: str = db.Column(db.String(16), index=True, unique=False)
+    email: str = db.Column(db.String(60), index=True, unique=True)
+    role: str = db.Column(db.String(25), index=True, unique=False)
+    phone: int = db.Column(db.Integer)
+    criminal_ab:str = db.Column(db.String(60))
+    nccp_number: int = db.Column(db.Integer, index=True, unique=True)
+    nbiaa_policy: str = db.Column(db.String) 
+    joined = db.Column(db.DateTime(), index=True, default=datetime.utcnow)
     username = db.Column(db.String(140), index=True, unique=True)
     password_hash = db.Column(db.String(140))
-    staffs = db.relationship('Staff', backref='user', lazy='dynamic')
+    
     teams = db.relationship('Team', backref='user', lazy='dynamic')
     athletes = db.relationship('Athlete', backref='user', lazy='dynamic')
-    joined_at_date = db.Column(db.DateTime(), index=True, default=datetime.utcnow)
-
+    
     def __repr__(self):
-        return f"Role: {self.role}, Name: {self.name}, Username: {self.username}, Email: {self.email}"
+        return f"User(Name: {self.first_name} {self.last_name}, role: {self.role})"
 
-    def set_password(self, password):
+    def set_password(self, password: str):
         self.password_hash = generate_password_hash(password)
 
-    def check_password(self, password):
+    def check_password(self, password: str):
         return check_password_hash(self.password_hash, password)
+    
+    def is_password_correct(self, password: str):
+        return check_password_hash(self.password_hash, password)
+    
+    @staticmethod
+    def _generate_password_hash(password):
+        return generate_password_hash(password)
 
 class Team(db.Model):
     id = db.Column(db.Integer, primary_key=True)
