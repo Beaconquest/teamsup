@@ -36,6 +36,18 @@ class User(UserMixin, db.Model):
     def check_password(self, password: str):
         return check_password_hash(self.password_hash, password)
 
+class School(db.Model):
+    """School model."""
+
+    __tablename__ = "schools"
+
+    id: int = db.Column(db.Integer, primary_key=True)
+    school_name: str = db.Column(db.String(140), index=True, unique=True)
+    teams = db.relationship('Team', backref='schools', lazy='dynamic')
+
+    def __repr__(self) -> str:
+        return f"School(id: {self.id}, school name: {self.school_name})"
+
 class Team(db.Model):
     """Team model."""
 
@@ -43,15 +55,15 @@ class Team(db.Model):
 
     id: int = db.Column(db.Integer, primary_key=True)
     team_name: str = db.Column(db.String(140), index=True, unique=True)
-
-    user_id: int = db.Column(db.Integer, db.ForeignKey('users.id'))
     school_id: int = db.Column(db.Integer, db.ForeignKey('schools.id'))
+    user_id: int = db.Column(db.Integer, db.ForeignKey('users.id'))
     athletes = db.relationship('Athlete', backref='teams', lazy='dynamic')
     
     def __repr__(self):
         return f"Team: {self.team_name}"
 
 class Athlete(db.Model):
+
     """Athlete model."""
 
     __tablename__ = 'athletes'
@@ -71,22 +83,13 @@ class Athlete(db.Model):
     def __repr__(self):
         return f"Athlete(Student Id: {self.student_id}, Name: {self.first_name} {self.last_name}, Email: {self.email})"
     
-class School(db.Model):
-    """A model of a school"""
-
-    __tablename__ = "schools"
-
-    id: int = db.Column(db.Integer, primary_key=True)
-    school_name: str = db.Column(db.String(140), index=True, unique=True)
-    teams = db.relationship('Team', backref='schools', lazy='dynamic')
-
 
 class Staff(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String, index=True, unique=False)
     email = db.Column(db.String(140), index=True, unique=True)
     role = db.Column(db.String(140), index=True, unique=False)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    # user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 
     def __repr__(self):
         return f"Staff Name: {self.name}"
