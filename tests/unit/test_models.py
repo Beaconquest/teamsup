@@ -1,7 +1,7 @@
 """
 This file (test_models.py) contains the unit tests for the models.py file.
 """
-from flask_package.models import User, Athlete, Team
+from flask_package.models import User, Athlete, Team, School
 from werkzeug.security import generate_password_hash
 
 def test_new_user():
@@ -26,9 +26,10 @@ def test_new_team():
     THEN check the team name, user id
     """
 
-    team = Team(id=1, team_name="Black Kats", user_id=1)
+    team = Team(id=1, team_name="Black Kats", user_id=1, school_id=1)
     assert team.team_name == "Black Kats"
     assert team.user_id == 1
+    assert team.school_id == 1
 
 def test_new_athlete():
     """
@@ -42,3 +43,12 @@ def test_new_athlete():
     assert athlete.first_name == 'Leo'
     assert athlete.last_name == 'Mwenga'
     assert athlete.student_id == 235467
+
+def test_new_school():
+    """
+    GIVEN a school model
+    WHEN a new school is created
+    THEN check the name of the school, relationship with the coach, team and athlete
+    """
+    school = School(id=1, school_name='Fredericton High School')
+    assert school.school_name =="Fredericton High School"

@@ -45,9 +45,9 @@ class Team(db.Model):
     team_name: str = db.Column(db.String(140), index=True, unique=True)
 
     user_id: int = db.Column(db.Integer, db.ForeignKey('users.id'))
-    
+    school_id: int = db.Column(db.Integer, db.ForeignKey('schools.id'))
     athletes = db.relationship('Athlete', backref='teams', lazy='dynamic')
-
+    
     def __repr__(self):
         return f"Team: {self.team_name}"
 
@@ -70,6 +70,15 @@ class Athlete(db.Model):
 
     def __repr__(self):
         return f"Athlete(Student Id: {self.student_id}, Name: {self.first_name} {self.last_name}, Email: {self.email})"
+    
+class School(db.Model):
+    """A model of a school"""
+
+    __tablename__ = "schools"
+
+    id: int = db.Column(db.Integer, primary_key=True)
+    school_name: str = db.Column(db.String(140), index=True, unique=True)
+    teams = db.relationship('Team', backref='schools', lazy='dynamic')
 
 
 class Staff(db.Model):
