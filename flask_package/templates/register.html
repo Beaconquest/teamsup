@@ -11,12 +11,23 @@
         {{ template_form.hidden_tag() }}
 
         <p>
-            {{ template_form.name(size=32, placeholder="Name") }}
-            {% for error in template_form.name.errors %}
+            {{ template_form.first_name(size=32, placeholder="First Name") }}
+            {% for error in template_form.first_name.errors %}
+                <span style="color:red">[{{ error }}]</span>
+            {% endfor %}
+        </p>
+        <p>
+            {{ template_form.last_name(size=32, placeholder="Last Name") }}
+            {% for error in template_form.last_name.errors %}
+                <span style="color:red">[{{ error }}]</span>
+            {% endfor %}
+        </p>
+        <p>
+            {{ template_form.email(size=32, placeholder="Email") }}
+            {% for error in template_form.email.errors %}
                 <span style="color:red">[{{ error }}]</span>
             {% endfor%}
         </p>
-
         <p>
             {% for subfield in template_form.role %}
                 <tr>
@@ -28,37 +39,25 @@
                 <span style="color:red">[{{ error }}]</span>
             {% endfor%}
         </p>
-
-        <p>
-            {{ template_form.email(size=32, placeholder="Email") }}
-            {% for error in template_form.email.errors %}
-                <span style="color:red">[{{ error }}]</span>
-            {% endfor%}
-        </p>
-
         <p>
             {{ template_form.username(size=32, placeholder="Username") }}
             {% for error in template_form.username.errors %}
                 <span style="color:red">[{{ error }}]</span>
             {% endfor%}
         </p>
-
-    
         <p>{{ template_form.password(size=32, placeholder="Password") }}
             {% for error in template_form.password.errors %}
                 <span style="color:red">[{{ error }}]</span>
             {% endfor%}
         </p>
-
         <p>{{ template_form.password2(size=32, placeholder="Repeat Passaword") }}
             {% for error in template_form.password2.errors %}
                 <span style="color:red">[{{ error }}]</span>
             {% endfor%}
         </p>
-
         <p>{{ template_form.submit }}</p>
     </form>
-    <p>Already aUser?<a href="{{ url_for('login') }}">Click here to login!</a></p>
+    <p>Already a User?<a href="{{ url_for('login') }}">Click here to login!</a></p>
     
 {% endblock %}
 

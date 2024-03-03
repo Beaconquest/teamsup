@@ -4,12 +4,13 @@ from wtforms.validators import DataRequired, length, EqualTo, Email
 from flask_package.models import User
 
 class RegistrationForm(FlaskForm):
-    name = StringField('Name', validators=[DataRequired()])
-    role = RadioField('Role', validators=[DataRequired()], 
-                            choices=[
-                                "Head Coach", "Assistant Coach", "Team Manager", "Volunteer"
-                                    ])
+    first_name = StringField('First Name', validators=[DataRequired()])
+    last_name = StringField('Last Name', validators=[DataRequired()])
     email = StringField('Email', validators=[DataRequired(), Email()])
+    role = RadioField('Role', validators=[DataRequired()], 
+                    choices=[
+                            "Head Coach", "Assistant Coach", "Team Manager", "Volunteer"
+                            ])
     username = StringField('Username', validators=[DataRequired()])
     password = PasswordField('Password', validators=[DataRequired()])
     password2 = PasswordField('Repeat Password', validators=[DataRequired(), EqualTo('password')])

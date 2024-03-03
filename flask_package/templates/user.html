@@ -3,8 +3,8 @@
 {% block content %}
     {% if current_user.is_authenticated %}
         <article>
-            <h1>Welcome, {{ current_user.name }}!</h1>
-            <p> Let's manage your team!</p>
+            <h1>Welcome, {{ current_user.first_name }}!</h1>
+            <h4> Let's manage your team!</h4>
 
             <table>
                 <tr>
