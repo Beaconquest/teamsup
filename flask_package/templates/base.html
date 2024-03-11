@@ -13,23 +13,22 @@
         <script src="{{ url_for('static', filename='js/vendor/modernizr-2.8.3-respond-1.4.2.min.js') }}"></script>
     </head>
     <body>
-
-        <div class="header-container">
-            <header class="wrapper clearfix">
-                {% if current_user.is_authenticated %}
-
+        {% if current_user.is_authenticated %}
+            <div class="header-container">
+                <header class="wrapper clearfix">
                     <h1 class="title"><a href="{{ url_for('user', username=current_user.username)}}">TeamsUp</a></h1>
-                    <br>
+                <div>
                     <nav>
                         <ul>
-                            <ul><a href="/coaches">Coaches</a></ul>
-                            <li><a href="/athletes">Athletes</a></li>
-                            <li><a href="/team">Team</a></li>
-                            <li><a href="/contact">Contact</a></li>
                             <li><a href="/logout">Logout</a></li>
                         </ul>
                     </nav>
-                {% else %}
+                </div>
+                </header>
+            </div>
+        {% else %}
+            <div class="header-container">
+                <header class="wrapper clearfix">
                     <h1 class="title"><a href="/">TeamsUp</a></h1>
                     <br>
                     <nav>
@@ -39,9 +38,9 @@
                                 <li><a href="/contact">Contact us</a></li>
                             </ul>
                     </nav>
-                {% endif %}
-            </header>
-        </div>
+                </header>
+            </div>
+        {% endif %}
 
         <div class="main-container">
             <div class="main wrapper clearfix">

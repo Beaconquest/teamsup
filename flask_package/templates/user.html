@@ -2,24 +2,16 @@
 
 {% block content %}
     {% if current_user.is_authenticated %}
-        <article>
-            <h1>Welcome, {{ current_user.first_name }}!</h1>
-            <h4> Let's manage your team!</h4>
-
-            <table>
-                <tr>
-                    <td>
-                        <p><a href="{{ url_for('coaches') }}">Coaches</a></p>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <p><a href="{{ url_for('team') }}">Team</a></p>
-                    </td>
-                </tr>
-            </table>
-
-        </article>
+        <div>
+            <div>
+                <h1>Welcome, {{ current_user.first_name }}!</h1>
+                <h4> Let's manage your team!</h4>
+            </div>
+        </div>
+        <div><a href="/coaches">Coaches</a></div>
+        <div><a href="/athletes">Athletes</a></div>
+        <div><a href="/team">Team</a></div>
+        <!-- <div><a href="/contact">Contact</a></div>  TO BE school link-->
     {% else %}
         {% with messages = get_flashed_messages() %}
             {% if messages %}
